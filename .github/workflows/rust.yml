@@ -16,6 +16,18 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
+      
+    # Install OS specific dependencies
+    - name: Install Linux dependencies
+      if: matrix.os == 'ubuntu-latest'
+      run: sudo apt-get install ninja
+    - name: Install macOS dependencies
+      if: matrix.os == 'macOS-latest'
+      run: brew install ninja
+    - name: Install Windows dependencies
+      if: matrix.os == 'windows-latest'
+      run: choco install ninja
+      
     - name: Build
       run: cargo build --verbose
     - name: Run tests
