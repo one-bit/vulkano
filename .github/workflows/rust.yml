@@ -1,0 +1,34 @@
+name: Rust
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  build:
+
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest, macOS-latest]
+
+    steps:
+    - uses: actions/checkout@v2
+      
+    # Install OS specific dependencies
+    - name: Install Linux dependencies
+      if: matrix.os == 'ubuntu-latest'
+      run: sudo apt-get install ninja-build
+    - name: Install macOS dependencies
+      if: matrix.os == 'macOS-latest'
+      run: brew install ninja
+    - name: Install Windows dependencies
+      if: matrix.os == 'windows-latest'
+      run: choco install ninja
+      
+    - name: Build
+      run: cargo build --verbose
+    - name: Run tests
+      run: cargo test --verbose
